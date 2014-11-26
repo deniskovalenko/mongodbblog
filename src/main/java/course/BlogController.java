@@ -97,9 +97,27 @@ public class BlogController {
             public void doHandle(Request request, Response response, Writer writer) throws IOException, TemplateException {
                 String username = sessionDAO.findUserNameBySessionId(getSessionCookie(request));
 
-                List<DBObject> posts = blogPostDAO.findByDateDescending(10);
+                List<DBObject> posts = blogPostDAO.findByDateDescending(0, 10);
                 SimpleHash root = new SimpleHash();
+                root.put("page", 0);
+                root.put("myposts", posts);
+                if (username != null) {
+                    root.put("username", username);
+                }
 
+                template.process(root, writer);
+            }
+        });
+
+        get(new FreemarkerBasedRoute("/page/:page", "blog_template.ftl") {
+            @Override
+            public void doHandle(Request request, Response response, Writer writer) throws IOException, TemplateException {
+                int page =Integer.parseInt(request.params(":page"));
+                String username = sessionDAO.findUserNameBySessionId(getSessionCookie(request));
+
+                List<DBObject> posts = blogPostDAO.findByDateDescending(page, 10);
+                SimpleHash root = new SimpleHash();
+                root.put("page", page);
                 root.put("myposts", posts);
                 if (username != null) {
                     root.put("username", username);
@@ -354,7 +372,7 @@ public class BlogController {
                         // set the cookie for the user's browser
                         response.raw().addCookie(new Cookie("session", sessionID));
 
-                        response.redirect("/welcome");
+                        response.redirect("/page/0");
                     }
                 }
                 else {
@@ -370,17 +388,18 @@ public class BlogController {
         });
 
         // Show the posts filed under a certain tag
-        get(new FreemarkerBasedRoute("/tag/:thetag", "blog_template.ftl") {
+        get(new FreemarkerBasedRoute("/tag/:thetag/:page", "blog_template.ftl") {
             @Override
             protected void doHandle(Request request, Response response, Writer writer)
                     throws IOException, TemplateException {
-
+                int page = Integer.parseInt(request.params(":page"));
                 String username = sessionDAO.findUserNameBySessionId(getSessionCookie(request));
                 SimpleHash root = new SimpleHash();
 
                 String tag = StringEscapeUtils.escapeHtml4(request.params(":thetag"));
-                List<DBObject> posts = blogPostDAO.findByTagDateDescending(tag);
-
+                List<DBObject> posts = blogPostDAO.findByTagDateDescending(tag, page, 10 );
+                root.put("page", page);
+                root.put("tag", tag);
                 root.put("myposts", posts);
                 if (username != null) {
                     root.put("username", username);

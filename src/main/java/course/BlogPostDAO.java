@@ -40,9 +40,9 @@ public class BlogPostDAO {
         return post;
     }
 
-    public List<DBObject> findByDateDescending(int limit) {
+    public List<DBObject> findByDateDescending(int page, int limit) {
         List<DBObject> posts;
-        DBCursor cursor = postsCollection.find().sort(new BasicDBObject().append("date", -1)).limit(limit);
+        DBCursor cursor = postsCollection.find().sort(new BasicDBObject().append("date", -1)).skip(limit*page).limit(limit);
         try {
             posts = cursor.toArray();
         } finally {
@@ -51,11 +51,11 @@ public class BlogPostDAO {
         return posts;
     }
 
-    public List<DBObject> findByTagDateDescending(final String tag) {
+    public List<DBObject> findByTagDateDescending(final String tag, int page, int limit) {
         List<DBObject> posts;
         BasicDBObject query = new BasicDBObject("tags", tag);
         System.out.println("/tag query: " + query.toString());
-        DBCursor cursor = postsCollection.find(query).sort(new BasicDBObject().append("date", -1)).limit(10);
+        DBCursor cursor = postsCollection.find(query).sort(new BasicDBObject().append("date", -1)).skip(limit*page).limit(limit);
         try {
             posts = cursor.toArray();
         } finally {

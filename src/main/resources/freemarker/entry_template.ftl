@@ -1,23 +1,47 @@
 <!doctype HTML>
 <html
 <head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
     <title>
         Blog Post - ${post["title"]}
     </title>
 </head>
 <body>
-<#if username??>
-    Welcome ${username} <a href="/logout">Logout</a> | <a href="/newpost">New Post</a>
 
-    <p>
-</#if>
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation" style="margin-bottom: 50px">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Blog home</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+            <#--<li class="active"><a href="#">Home</a></li>-->
+            <#if username??>
+                <li>  <a href="/logout">Logout</a> </u> </li>
+                <li>   <a href="/newpost">New Post</a> </li>
+            </#if>
 
-<a href="/">Blog Home</a><br><br>
 
-<h2>${post["title"]}</h2>
+            </ul>
+        </div><!--/.nav-collapse -->
+    </div>
+</nav>
+<div class="container" style="margin-top: 30px">
+
+    <div class="starter-template">
+<h2><label class="label label-success">${post["title"]} </label></h2>
 Posted ${post["date"]?datetime}<i> By ${post["author"]}</i><br>
 <hr>
+<div class="jumbotron">
 ${post["body"]}
+</div>
+
 <p>
     <em>Filed Under</em>:
     <#if post["tags"]??>
@@ -36,24 +60,30 @@ ${post["body"]}
     <#if (numComments > 0)>
         <#list 0 .. (numComments -1) as i>
             <br>
+            <div class="row">
+                <strong>${post["comments"][i]["author"]}</strong>
+            </div>
+
             ${post["comments"][i]["body"]}<br>
             <hr>
         </#list>
     </#if>
-    <h3>Add a comment</h3>
+    <h3><label class="label-warning">Add a comment </label></h3>
 
     <form action="/newcomment" method="POST">
         <input type="hidden" name="permalink", value="${post["permalink"]}">
         ${errors!""}<br>
         <b>Name</b> (required)<br>
-        <input type="text" name="commentName" size="60" value="${comment["name"]}"><br>
+        <input class="form-control" type="text" name="commentName" size="60" value="${comment["name"]}"><br>
         <b>Email</b> (optional)<br>
-        <input type="text" name="commentEmail" size="60" value="${comment["email"]}"><br>
+        <input class="form-control" type="text" name="commentEmail" size="60" value="${comment["email"]}"><br>
         <b>Comment</b><br>
-        <textarea name="commentBody" cols="60" rows="10">${comment["body"]}</textarea><br>
-        <input type="submit" value="Submit">
+        <textarea class="form-control" name="commentBody" cols="60" rows="10">${comment["body"]}</textarea><br>
+        <input class="btn btn-primary" type="submit" value="Submit">
     </form>
 </ul>
+        </div>
+    </div>
 </body>
 </html>
 
