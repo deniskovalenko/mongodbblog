@@ -409,7 +409,24 @@ public class BlogController {
             }
         });
 
+        get(new FreemarkerBasedRoute("/user/:author/:page", "blog_template.ftl") {
+            @Override
+            protected void doHandle(Request request, Response response, Writer writer) throws IOException, TemplateException {
+                String author = StringEscapeUtils.escapeHtml4(request.params(":author"));
+                int page = Integer.parseInt(request.params(":page"));
+                String username = sessionDAO.findUserNameBySessionId(getSessionCookie(request));
+                SimpleHash root = new SimpleHash();
 
+                List<DBObject> posts = blogPostDAO.findByAuthorDateDescending(author, page, 10 );
+                root.put("page", page);
+                root.put("author", author);
+                root.put("myposts", posts);
+                if (username != null) {
+                    root.put("username", username);
+                }
+                template.process(root, writer);
+            }
+        });
 
         // tells the user that the URL is dead
         get(new FreemarkerBasedRoute("/post_not_found", "post_not_found.ftl") {

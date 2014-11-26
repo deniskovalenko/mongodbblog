@@ -36,7 +36,11 @@
 
     <div class="starter-template">
 <h2><label class="label label-success">${post["title"]} </label></h2>
-Posted ${post["date"]?datetime}<i> By ${post["author"]}</i><br>
+Posted ${post["date"]?datetime}<i> By
+        <a href="/user/${post["author"]}/0">
+            ${post["author"]}
+        </a></i>
+<br>
 <hr>
 <div class="jumbotron">
 ${post["body"]}
@@ -61,7 +65,9 @@ ${post["body"]}
         <#list 0 .. (numComments -1) as i>
             <br>
             <div class="row">
-                <strong>${post["comments"][i]["author"]}</strong>
+                <a href="/user/${post["comments"][i]["author"]}/0">
+                        <strong>${post["comments"][i]["author"]}</strong>
+                </a>
             </div>
 
             ${post["comments"][i]["body"]}<br>

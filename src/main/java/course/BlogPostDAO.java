@@ -64,6 +64,19 @@ public class BlogPostDAO {
         return posts;
     }
 
+    public List<DBObject> findByAuthorDateDescending(final String author, int page, int limit){
+        List<DBObject> posts;
+        BasicDBObject query = new BasicDBObject("author", author);
+        System.out.println("/author query: " + query.toString());
+        DBCursor cursor = postsCollection.find(query).sort(new BasicDBObject().append("date", -1)).skip(limit*page).limit(limit);
+        try {
+            posts = cursor.toArray();
+        } finally {
+            cursor.close();
+        }
+        return posts;
+    }
+
     public String addPost(String title, String body, List tags, String username) {
 
         System.out.println("inserting blog entry " + title + " " + body);
