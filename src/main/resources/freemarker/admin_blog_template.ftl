@@ -84,6 +84,8 @@
         </#if>
 
         <a href="/admin/post/${post["permalink"]}">${numComments}</a>
+        <br>
+        <a href="/delete/${post["permalink"]}" class="btn btn-danger">Delete</a>
         <hr>
         <div style="width: 60%; text-align: left">
         ${post["body"]!""}

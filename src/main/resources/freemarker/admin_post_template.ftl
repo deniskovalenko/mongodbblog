@@ -41,6 +41,8 @@
         ${post["author"]}
         </a></i>
         <br>
+        <a href="/delete/${post["permalink"]}" class="btn btn-danger">Delete</a>
+        <br>
         <hr>
         <div class="jumbotron">
         ${post["body"]}
