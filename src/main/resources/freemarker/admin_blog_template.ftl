@@ -8,12 +8,12 @@
     <meta name="author" content="">
     <link rel="icon" href="../../favicon.ico">
 
-    <title>Blog based on mongoDB</title>
+    <title>Admin!!! Blog based on mongoDB</title>
 
     <!-- Bootstrap core CSS -->
     <link href="/style/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -35,13 +35,11 @@
         </div>
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
-                <#--<li class="active"><a href="#">Home</a></li>-->
-                 <#if username??>
-                  <li>  <a href="/logout">Logout</a> </u> </li>
-                  <li>   <a href="/newpost">New Post</a> </li>
-                 <#else>
-                  <li>  <a href="/login">Login</a> </u> </li>
-                  </#if>
+            <#--<li class="active"><a href="#">Home</a></li>-->
+            <#if username??>
+                <li>  <a href="/logout">Logout</a> </u> </li>
+                <li>   <a href="/admin/newpost">New Post</a> </li>
+            </#if>
 
 
             </ul>
@@ -55,26 +53,26 @@
         h1>My Blog</h1>
         <br>
         <ul class="pagination">
-    <#if tag??>
-        <#if 0 < page >
-        <li><a href="/tag/${tag}/${page-1}">prev</a></li>
+        <#if tag??>
+            <#if 0 < page >
+                <li><a href="/admin/tag/${tag}/${page-1}">prev</a></li>
+            </#if>
+            <li><a href="/admin/tag/${tag}/${page+1}">next</a></li>
+        <#else>
+            <#if 0 < page >
+                <li> <a href="/admin/page/${page-1}">prev</a></li>
+            </#if>
+            <li>
+                <a href="/admin/page/${page+1}">next</a>
+            </li>
         </#if>
-        <li><a href="/tag/${tag}/${page+1}">next</a></li>
-    <#else>
-        <#if 0 < page >
-        <li> <a href="/page/${page-1}">prev</a></li>
-        </#if>
-    <li>
-        <a href="/page/${page+1}">next</a>
-    </li>
-    </#if>
         </ul>
 
     <#assign elementCount =0>
     <#list myposts as post>
-        <h2><a href="/post/${post["permalink"]}">${post["title"]}</a></h2>
+        <h2><a href="/admin/post/${post["permalink"]}">${post["title"]}</a></h2>
         Posted ${post["date"]?datetime} <i> By
-        <a href="/user/${post["author"]}/0">
+        <a href="/admin/user/${post["author"]}/0">
         ${post["author"]}
         </a></i>
         <br>
@@ -85,11 +83,7 @@
             <#assign numComments = 0>
         </#if>
 
-        <a href="/post/${post["permalink"]}">${numComments}</a>
-        <#if post["author"]=username>
-            <br>
-            <a href="/delete/${post["permalink"]}" class="btn btn-danger">Delete</a>
-        </#if>
+        <a href="/admin/post/${post["permalink"]}">${numComments}</a>
         <hr>
         <div style="width: 60%; text-align: left">
         ${post["body"]!""}
@@ -98,7 +92,7 @@
         <em>Filed Under</em>:
         <#if post["tags"]??>
             <#list post["tags"] as tag>
-                <a href="/tag/${tag}/0">${tag}</a>
+                <a href="/admin/tag/${tag}/0">${tag}</a>
             </#list>
         </#if>
         <#assign elementCount=elementCount+1>
@@ -107,21 +101,21 @@
         <ul class="pagination">
         <#if tag??>
             <#if 0 < page >
-                <li><a href="/tag/${tag}/${page-1}">prev</a></li>
+                <li><a href="/admin/tag/${tag}/${page-1}">prev</a></li>
             </#if>
-            <li><a href="/tag/${tag}/${page+1}">next</a></li>
+            <li><a href="/admin/tag/${tag}/${page+1}">next</a></li>
         <#else>
             <#if 0 < page >
-                <li> <a href="/page/${page-1}">prev</a></li>
+                <li> <a href="/admin/page/${page-1}">prev</a></li>
             </#if>
             <li>
-                <#if 9 < elementCount><a href="/page/${page+1}">next</a></#if>
+                <#if 9 < elementCount><a href="/admin/page/${page+1}">next</a></#if>
             </li>
         </#if>
         </ul>
 
 
-        </div>
+    </div>
 
 </div><!-- /.container -->
 

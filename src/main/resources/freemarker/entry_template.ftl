@@ -21,10 +21,11 @@
         </div>
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
-            <#--<li class="active"><a href="#">Home</a></li>-->
             <#if username??>
                 <li>  <a href="/logout">Logout</a> </u> </li>
                 <li>   <a href="/newpost">New Post</a> </li>
+            <#else>
+                <li>  <a href="/login">Login</a> </u> </li>
             </#if>
 
 
@@ -40,6 +41,10 @@ Posted ${post["date"]?datetime}<i> By
         <a href="/user/${post["author"]}/0">
             ${post["author"]}
         </a></i>
+    <#if post["author"]=username>
+        <br>
+        <a href="/delete/${post["permalink"]}" class="btn btn-danger">Delete</a>
+    </#if>
 <br>
 <hr>
 <div class="jumbotron">

@@ -35,9 +35,11 @@ public class BlogPostDAO {
 
     public DBObject findByPermalink(String permalink) {
         DBObject post = postsCollection.findOne(new BasicDBObject("permalink", permalink));
-
-
         return post;
+    }
+
+    public void deleteByLink(String permalink) {
+       postsCollection.remove(findByPermalink(permalink));
     }
 
     public List<DBObject> findByDateDescending(int page, int limit) {
@@ -50,6 +52,7 @@ public class BlogPostDAO {
         }
         return posts;
     }
+
 
     public List<DBObject> findByTagDateDescending(final String tag, int page, int limit) {
         List<DBObject> posts;

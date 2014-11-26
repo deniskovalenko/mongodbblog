@@ -1,30 +1,30 @@
 <#--<!doctype HTML>-->
 <#--<html>-->
 <#--<head>-->
-    <#--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">-->
-    <#--<title>Create a new post</title>-->
+<#--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">-->
+<#--<title>Create a new post</title>-->
 <#--</head>-->
 <#--<body>-->
 <#--<#if username??>-->
-    <#--Welcome ${username} <a href="/logout">Logout</a> | <a href="/">Blog Home</a>-->
+<#--Welcome ${username} <a href="/logout">Logout</a> | <a href="/">Blog Home</a>-->
 
-    <#--<p>-->
+<#--<p>-->
 <#--</#if>-->
 <#--<form action="/newpost" method="POST">-->
-    <#--${errors!""}-->
-    <#--<h2>Title</h2>-->
-    <#--<input type="text" name="subject" size="120" value="${subject!""}"><br>-->
+<#--${errors!""}-->
+<#--<h2>Title</h2>-->
+<#--<input type="text" name="subject" size="120" value="${subject!""}"><br>-->
 
-    <#--<h2>Blog Entry-->
-        <#--<h2>-->
-            <#--<textarea name="body" cols="120" rows="20">${body!""}</textarea><br>-->
+<#--<h2>Blog Entry-->
+<#--<h2>-->
+<#--<textarea name="body" cols="120" rows="20">${body!""}</textarea><br>-->
 
-            <#--<h2>Tags</h2>-->
-            <#--Comma separated, please<br>-->
-            <#--<input type="text" name="tags" size="120" value="${tags!""}"><br>-->
+<#--<h2>Tags</h2>-->
+<#--Comma separated, please<br>-->
+<#--<input type="text" name="tags" size="120" value="${tags!""}"><br>-->
 
-            <#--<p>-->
-                <#--<input type="submit" class="btn btn-primary" value="Submit">-->
+<#--<p>-->
+<#--<input type="submit" class="btn btn-primary" value="Submit">-->
 
 <#--</body>-->
 <#--</html>-->
@@ -41,7 +41,7 @@
     <link rel="icon" href="../../favicon.ico">
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-    <title>Create a new post</title>
+    <title>Admin!!! Create a new post</title>
 
     <!-- Custom styles for this template -->
     <link href="starter-template.css" rel="stylesheet">
@@ -68,15 +68,11 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/">Blog home</a>
+            <a class="navbar-brand" href="/admin">Blog home</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
-                <#if username??>
-                 <li class="active">  <a href="/logout">Logout</a> </u> </li>
-                <#else>
-                 <li>  <a href="/login">Login</a> </u> </li>
-                </#if>
+                <li class="active"><a href="/logout">Logout</a></li>
             </ul>
         </div><!--/.nav-collapse -->
     </div>
@@ -85,7 +81,7 @@
 <div class="container" style="margin-top: 50px">
 
     <div class="starter-template">
-        <form action="/newpost" method="POST">
+        <form action="/admin/newpost" method="POST">
         ${errors!""}
             <h2>Title</h2>
             <input class="form-control" type="text" name="subject" width="120" value="${subject!""}"><br>
@@ -100,7 +96,7 @@
 
                     <p>
                         <input type="submit" class="btn btn-primary" value="Submit">
-         </div>
+    </div>
 
 </div><!-- /.container -->
 

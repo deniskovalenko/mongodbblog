@@ -61,6 +61,12 @@ public class UserDAO {
         }
     }
 
+    public Boolean isAdmin(String username) {
+        DBObject user;
+        user = usersCollection.findOne(new BasicDBObject("_id", username));
+        return ("admin".equals(user.get("role")));
+    }
+
     public DBObject validateLogin(String username, String password) {
         DBObject user;
 
