@@ -511,34 +511,41 @@ public class BlogController {
             @Override
             public void doHandle(Request request, Response response, Writer writer) throws IOException, TemplateException {
                 String username = sessionDAO.findUserNameBySessionId(getSessionCookie(request));
+                if (!userDAO.isAdmin(username))
+                {response.redirect("/page/0");}
+                else {
 
-                List<DBObject> posts = blogPostDAO.findByDateDescending(0, 10);
-                SimpleHash root = new SimpleHash();
-                root.put("page", 0);
-                root.put("myposts", posts);
-                if (username != null) {
-                    root.put("username", username);
+                    List<DBObject> posts = blogPostDAO.findByDateDescending(0, 10);
+                    SimpleHash root = new SimpleHash();
+                    root.put("page", 0);
+                    root.put("myposts", posts);
+                    if (username != null) {
+                        root.put("username", username);
+                    }
+
+                    template.process(root, writer);
                 }
-
-                template.process(root, writer);
             }
         });
 
         get(new FreemarkerBasedRoute("/admin/page/:page", "admin_blog_template.ftl") {
             @Override
             public void doHandle(Request request, Response response, Writer writer) throws IOException, TemplateException {
-                int page =Integer.parseInt(request.params(":page"));
                 String username = sessionDAO.findUserNameBySessionId(getSessionCookie(request));
+                if (!userDAO.isAdmin(username))
+                {response.redirect("/page/0");}
+                else {
+                    int page =Integer.parseInt(request.params(":page"));
+                    List<DBObject> posts = blogPostDAO.findByDateDescending(page, 10);
+                    SimpleHash root = new SimpleHash();
+                    root.put("page", page);
+                    root.put("myposts", posts);
+                    if (username != null) {
+                        root.put("username", username);
+                    }
 
-                List<DBObject> posts = blogPostDAO.findByDateDescending(page, 10);
-                SimpleHash root = new SimpleHash();
-                root.put("page", page);
-                root.put("myposts", posts);
-                if (username != null) {
-                    root.put("username", username);
+                    template.process(root, writer);
                 }
-
-                template.process(root, writer);
             }
         });
 
@@ -546,11 +553,10 @@ public class BlogController {
         get(new FreemarkerBasedRoute("/admin/post/:permalink", "admin_post_template.ftl") {
             @Override
             protected void doHandle(Request request, Response response, Writer writer) throws IOException, TemplateException {
-                String permalink = request.params(":permalink");
-
-                System.out.println("/post: get " + permalink);
                 String username = sessionDAO.findUserNameBySessionId(getSessionCookie(request));
 
+                String permalink = request.params(":permalink");
+                System.out.println("/post: get " + permalink);
                 DBObject post = blogPostDAO.findByPermalink(permalink);
                 if (post == null) {
                     response.redirect("/post_not_found");
@@ -578,33 +584,37 @@ public class BlogController {
             @Override
             protected void doHandle(Request request, Response response, Writer writer)
                     throws IOException, TemplateException {
-                String name = StringEscapeUtils.escapeHtml4(request.queryParams("commentName"));
-                String email = StringEscapeUtils.escapeHtml4(request.queryParams("commentEmail"));
-                String body = StringEscapeUtils.escapeHtml4(request.queryParams("commentBody"));
-                String permalink = request.queryParams("permalink");
-
-                DBObject post = blogPostDAO.findByPermalink(permalink);
-                if (post == null) {
-                    response.redirect("/post_not_found");
-                }
-                // check that comment is good
-                else if (name.equals("") || body.equals("")) {
-                    // bounce this back to the user for correction
-                    SimpleHash root = new SimpleHash();
-                    SimpleHash comment = new SimpleHash();
-
-                    comment.put("name", name);
-                    comment.put("email", email);
-                    comment.put("body", body);
-                    root.put("comment", comment);
-                    root.put("post", post);
-                    root.put("errors", "Post must contain your name and an actual comment");
-
-                    template.process(root, writer);
-                }
+                String username = sessionDAO.findUserNameBySessionId(getSessionCookie(request));
+                if (!userDAO.isAdmin(username))
+                {response.redirect("/page/0");}
                 else {
-                    blogPostDAO.addPostComment(name, email, body, permalink);
-                    response.redirect("/admin/post/" + permalink);
+                    String name = StringEscapeUtils.escapeHtml4(request.queryParams("commentName"));
+                    String email = StringEscapeUtils.escapeHtml4(request.queryParams("commentEmail"));
+                    String body = StringEscapeUtils.escapeHtml4(request.queryParams("commentBody"));
+                    String permalink = request.queryParams("permalink");
+
+                    DBObject post = blogPostDAO.findByPermalink(permalink);
+                    if (post == null) {
+                        response.redirect("/post_not_found");
+                    }
+                    // check that comment is good
+                    else if (name.equals("") || body.equals("")) {
+                        // bounce this back to the user for correction
+                        SimpleHash root = new SimpleHash();
+                        SimpleHash comment = new SimpleHash();
+
+                        comment.put("name", name);
+                        comment.put("email", email);
+                        comment.put("body", body);
+                        root.put("comment", comment);
+                        root.put("post", post);
+                        root.put("errors", "Post must contain your name and an actual comment");
+
+                        template.process(root, writer);
+                    } else {
+                        blogPostDAO.addPostComment(name, email, body, permalink);
+                        response.redirect("/admin/post/" + permalink);
+                    }
                 }
             }
         });
@@ -621,10 +631,14 @@ public class BlogController {
                     response.redirect("/login");
                 }
                 else {
-                    SimpleHash root = new SimpleHash();
-                    root.put("username", username);
+                    if (!userDAO.isAdmin(username))
+                    {response.redirect("/page/0");}
+                    else {
+                        SimpleHash root = new SimpleHash();
+                        root.put("username", username);
 
-                    template.process(root, writer);
+                        template.process(root, writer);
+                    }
                 }
             }
         });
@@ -634,37 +648,37 @@ public class BlogController {
             @Override
             protected void doHandle(Request request, Response response, Writer writer)
                     throws IOException, TemplateException {
-
-                String title = StringEscapeUtils.escapeHtml4(request.queryParams("subject"));
-                String post = StringEscapeUtils.escapeHtml4(request.queryParams("body"));
-                String tags = StringEscapeUtils.escapeHtml4(request.queryParams("tags"));
-
                 String username = sessionDAO.findUserNameBySessionId(getSessionCookie(request));
-
-                if (username == null) {
-                    response.redirect("/login");    // only logged in users can post to blog
-                }
-                else if (title.equals("") || post.equals("")) {
-                    // redisplay page with errors
-                    HashMap<String, String> root = new HashMap<String, String>();
-                    root.put("errors", "post must contain a title and blog entry.");
-                    root.put("subject", title);
-                    root.put("username", username);
-                    root.put("tags", tags);
-                    root.put("body", post);
-                    template.process(root, writer);
-                }
+                if (!userDAO.isAdmin(username))
+                {response.redirect("/page/0");}
                 else {
-                    // extract tags
-                    ArrayList<String> tagsArray = extractTags(tags);
+                    String title = StringEscapeUtils.escapeHtml4(request.queryParams("subject"));
+                    String post = StringEscapeUtils.escapeHtml4(request.queryParams("body"));
+                    String tags = StringEscapeUtils.escapeHtml4(request.queryParams("tags"));
 
-                    // substitute some <p> for the paragraph breaks
-                    post = post.replaceAll("\\r?\\n", "<p>");
+                    if (username == null) {
+                        response.redirect("/login");    // only logged in users can post to blog
+                    } else if (title.equals("") || post.equals("")) {
+                        // redisplay page with errors
+                        HashMap<String, String> root = new HashMap<String, String>();
+                        root.put("errors", "post must contain a title and blog entry.");
+                        root.put("subject", title);
+                        root.put("username", username);
+                        root.put("tags", tags);
+                        root.put("body", post);
+                        template.process(root, writer);
+                    } else {
+                        // extract tags
+                        ArrayList<String> tagsArray = extractTags(tags);
 
-                    String permalink = blogPostDAO.addPost(title, post, tagsArray, username);
+                        // substitute some <p> for the paragraph breaks
+                        post = post.replaceAll("\\r?\\n", "<p>");
 
-                    // now redirect to the blog permalink
-                    response.redirect("/admin/post/" + permalink);
+                        String permalink = blogPostDAO.addPost(title, post, tagsArray, username);
+
+                        // now redirect to the blog permalink
+                        response.redirect("/admin/post/" + permalink);
+                    }
                 }
             }
         });
@@ -673,39 +687,48 @@ public class BlogController {
             @Override
             protected void doHandle(Request request, Response response, Writer writer)
                     throws IOException, TemplateException {
-                int page = Integer.parseInt(request.params(":page"));
                 String username = sessionDAO.findUserNameBySessionId(getSessionCookie(request));
-                SimpleHash root = new SimpleHash();
+                if (!userDAO.isAdmin(username))
+                {response.redirect("/page/0");}
+                else {
+                    int page = Integer.parseInt(request.params(":page"));
+                    SimpleHash root = new SimpleHash();
 
-                String tag = StringEscapeUtils.escapeHtml4(request.params(":thetag"));
-                List<DBObject> posts = blogPostDAO.findByTagDateDescending(tag, page, 10 );
-                root.put("page", page);
-                root.put("tag", tag);
-                root.put("myposts", posts);
-                if (username != null) {
-                    root.put("username", username);
+                    String tag = StringEscapeUtils.escapeHtml4(request.params(":thetag"));
+                    List<DBObject> posts = blogPostDAO.findByTagDateDescending(tag, page, 10);
+                    root.put("page", page);
+                    root.put("tag", tag);
+                    root.put("myposts", posts);
+                    if (username != null) {
+                        root.put("username", username);
+                    }
+
+                    template.process(root, writer);
                 }
-
-                template.process(root, writer);
             }
         });
 
         get(new FreemarkerBasedRoute("/admin/user/:author/:page", "admin_blog_template.ftl") {
             @Override
             protected void doHandle(Request request, Response response, Writer writer) throws IOException, TemplateException {
-                String author = StringEscapeUtils.escapeHtml4(request.params(":author"));
-                int page = Integer.parseInt(request.params(":page"));
                 String username = sessionDAO.findUserNameBySessionId(getSessionCookie(request));
-                SimpleHash root = new SimpleHash();
+                if (!userDAO.isAdmin(username))
+                {response.redirect("/page/0");}
+                else {
 
-                List<DBObject> posts = blogPostDAO.findByAuthorDateDescending(author, page, 10 );
-                root.put("page", page);
-                root.put("author", author);
-                root.put("myposts", posts);
-                if (username != null) {
-                    root.put("username", username);
+                    String author = StringEscapeUtils.escapeHtml4(request.params(":author"));
+                    int page = Integer.parseInt(request.params(":page"));
+                    SimpleHash root = new SimpleHash();
+
+                    List<DBObject> posts = blogPostDAO.findByAuthorDateDescending(author, page, 10);
+                    root.put("page", page);
+                    root.put("author", author);
+                    root.put("myposts", posts);
+                    if (username != null) {
+                        root.put("username", username);
+                    }
+                    template.process(root, writer);
                 }
-                template.process(root, writer);
             }
         });
         //---------------------admin handlers-------------------------------------------
