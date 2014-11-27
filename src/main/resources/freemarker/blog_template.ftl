@@ -37,14 +37,15 @@
             <ul class="nav navbar-nav">
                 <#--<li class="active"><a href="#">Home</a></li>-->
                  <#if username??>
-                  <li>  <a href="/logout">Logout</a> </u> </li>
-                  <li>   <a href="/newpost">New Post</a> </li>
+                 <li>   <a href="/newpost">New Post</a> </li>
+                 <li>  <a href="/logout">Logout</a> </u> </li>
                  <#else>
                   <li>  <a href="/login">Login</a> </u> </li>
                   </#if>
-
-
             </ul>
+            <form action="/search" method="POST" class="navbar-form navbar-right">
+                <input name="tag" type="text" class="form-control" placeholder="Search...">
+            </form>
         </div><!--/.nav-collapse -->
     </div>
 </nav>

@@ -78,6 +78,9 @@
                  <li>  <a href="/login">Login</a> </u> </li>
                 </#if>
             </ul>
+            <form action="/search" method="POST" class="navbar-form navbar-right">
+                <input name="tag" type="text" class="form-control" placeholder="Search...">
+            </form>
         </div><!--/.nav-collapse -->
     </div>
 </nav>

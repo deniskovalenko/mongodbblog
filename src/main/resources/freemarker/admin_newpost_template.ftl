@@ -72,8 +72,12 @@
         </div>
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
+                <li>   <a href="/admin/stats">Statistics</a> </li>
                 <li class="active"><a href="/logout">Logout</a></li>
             </ul>
+            <form action="/admin/search" method="POST" class="navbar-form navbar-right">
+                <input name="tag" type="text" class="form-control" placeholder="Search...">
+            </form>
         </div><!--/.nav-collapse -->
     </div>
 </nav>

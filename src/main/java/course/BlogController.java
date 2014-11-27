@@ -127,6 +127,17 @@ public class BlogController {
             }
         });
 
+        post(new FreemarkerBasedRoute("/search", "blog_template.ftl") {
+            @Override
+            protected void doHandle(Request request, Response response, Writer writer)
+                    throws IOException, TemplateException {
+                   String tag = StringEscapeUtils.escapeHtml4(request.queryParams("tag"));
+                   response.redirect("/tag/"+tag+"/0");
+
+            }
+
+        });
+
         get(new FreemarkerBasedRoute("/delete/:permalink", "blog_template.ftl") {
             @Override
             public void doHandle(Request request, Response response, Writer writer) throws IOException, TemplateException {
@@ -505,7 +516,40 @@ public class BlogController {
 
 
         //---------------------admin handlers-------------------------------------------
+        post(new FreemarkerBasedRoute("/admin/search", "admin_blog_template.ftl") {
+            @Override
+            protected void doHandle(Request request, Response response, Writer writer)
+                    throws IOException, TemplateException {
+                String username = sessionDAO.findUserNameBySessionId(getSessionCookie(request));
+                if (!userDAO.isAdmin(username))
+                {response.redirect("/page/0");}
+                else {
+                    String tag = StringEscapeUtils.escapeHtml4(request.queryParams("tag"));
 
+                    response.redirect("/admin/tag/"+tag+"/0");
+                    }
+                }
+
+        });
+
+        get(new FreemarkerBasedRoute("/admin/stats", "admin_stats.ftl") {
+            @Override
+            protected void doHandle(Request request, Response response, Writer writer) throws IOException, TemplateException {
+
+                // get cookie
+                String username = sessionDAO.findUserNameBySessionId(getSessionCookie(request));
+                if (!userDAO.isAdmin(username))
+                    {response.redirect("/page/0");}
+                    else {
+
+                        SimpleHash root = new SimpleHash();
+                        root.put("username", username);
+
+                        template.process(root, writer);
+                    }
+                }
+
+        });
 
         get(new FreemarkerBasedRoute("/admin", "admin_blog_template.ftl") {
             @Override
