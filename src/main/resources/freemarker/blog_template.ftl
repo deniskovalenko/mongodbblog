@@ -126,7 +126,11 @@
 
 </div><!-- /.container -->
 
-
+<footer class="footer">
+    <div class="container">
+        <p class="text-muted" style="text-align: center">Denis Kovalenko 2014</p>
+    </div>
+</footer>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <script src="../../dist/js/bootstrap.min.js"></script>
 <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
