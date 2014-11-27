@@ -1,7 +1,13 @@
-<!doctype HTML>
-<html
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
     <title>
         Blog Post - ${post["title"]}
     </title>
@@ -42,9 +48,11 @@ Posted ${post["date"]?datetime}<i> By
         <a href="/user/${post["author"]}/0">
             ${post["author"]}
         </a></i>
+    <#if username??>
     <#if post["author"]=username>
         <br>
         <a href="/delete/${post["permalink"]}" class="btn btn-danger">Delete</a>
+    </#if>
     </#if>
 <br>
 <hr>

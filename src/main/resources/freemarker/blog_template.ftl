@@ -87,9 +87,11 @@
         </#if>
 
         <a href="/post/${post["permalink"]}">${numComments}</a>
+        <#if username??>
         <#if post["author"]=username>
             <br>
             <a href="/delete/${post["permalink"]}" class="btn btn-danger">Delete</a>
+        </#if>
         </#if>
         <hr>
         <div style="width: 60%; text-align: left">
