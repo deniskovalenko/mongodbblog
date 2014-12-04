@@ -98,7 +98,7 @@
         ${post["body"]!""}
         </div>
 
-        <em>Filed Under</em>:
+        <em>Comments:</em>:
         <#if post["tags"]??>
             <#list post["tags"] as tag>
                 <a href="/tag/${tag}/0">${tag}</a>

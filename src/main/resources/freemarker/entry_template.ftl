@@ -61,7 +61,7 @@ ${post["body"]}
 </div>
 
 <p>
-    <em>Filed Under</em>:
+    <em>Tags:</em>:
     <#if post["tags"]??>
         <#list post["tags"] as tag>
             <a href="/tag/${tag}">${tag}</a>
@@ -112,5 +112,3 @@ ${post["body"]}
 </footer>
 </body>
 </html>
-
-

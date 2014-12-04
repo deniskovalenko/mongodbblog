@@ -544,7 +544,8 @@ public class BlogController {
 
                         SimpleHash root = new SimpleHash();
                         root.put("username", username);
-
+                       // int count = blogPostDAO.commentsCount();
+                       // root.put("count", count);
                         template.process(root, writer);
                     }
                 }
